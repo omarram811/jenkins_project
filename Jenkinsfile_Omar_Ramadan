@@ -44,7 +44,10 @@ pipeline {
         stage('Security Scan') {
             steps {
                 script {
-                    bat 'venv\\Scripts\\activate && bandit -r .'
+                    // Set the output encoding to UTF-8
+                    withEnv(["PYTHONIOENCODING=utf-8"]) {
+                        bat 'venv\\Scripts\\activate && bandit -r . -f txt -o bandit_report.txt'
+                    }
                 }
             }
         }
