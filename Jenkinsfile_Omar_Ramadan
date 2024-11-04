@@ -30,9 +30,8 @@ pipeline {
         stage('Coverage') {
             steps {
                 script {
-                    // Ensuring all dependencies, including pytest, are installed
+                    // Ensuring all dependencies are installed
                     bat 'venv\\Scripts\\activate && pip install pytest coverage'
-                    bat 'venv\\Scripts\\activate && pip list' // Debug: Show installed packages
 
                     // Running coverage with pytest
                     bat 'venv\\Scripts\\activate && coverage run -m pytest'
@@ -54,6 +53,7 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
+                    // Simple local deployment
                     bat 'venv\\Scripts\\activate && python app.py'
                 }
             }
