@@ -30,6 +30,34 @@ pipeline {
                 }
             }
         }
+        stage('Coverage') {
+            steps {
+                script {
+                    // Run code coverage
+                    bat 'set PYTHONPATH=%WORKSPACE% && venv\\Scripts\\activate && coverage run -m pytest'
+                    bat 'set PYTHONPATH=%WORKSPACE% && venv\\Scripts\\activate && coverage report -m'
+                    bat 'set PYTHONPATH=%WORKSPACE% && venv\\Scripts\\activate && coverage html' // Optional: generates HTML report
+                }
+            }
+        }
+        stage('Security Scan') {
+            steps {
+                script {
+                    // Run security scanning with bandit
+                    bat 'set PYTHONPATH=%WORKSPACE% && venv\\Scripts\\activate && bandit -r .'
+                }
+            }
+        }
+        stage('Deploy') {
+            steps {
+                script {
+                    // Basic deployment script, adjust as necessary for your deployment environment
+                    bat 'echo Deploying application...'
+                    bat 'set PYTHONPATH=%WORKSPACE% && venv\\Scripts\\activate && python app.py'
+                    // Note: Customize this command to fit your actual deployment target.
+                }
+            }
+        }
     }
     post {
         always {
