@@ -8,7 +8,7 @@ pipeline {
             steps {
                 script {
                     bat 'python -m venv venv'
-                    bat 'set PYTHONPATH=%WORKSPACE% && venv\\Scripts\\activate && pip install -r requirements.txt'
+                    bat 'set PYTHONPATH=%WORKSPACE% && venv\\Scripts\\activate && pip install -r requirements.txt && pip freeze > requirements_lock.txt'
                 }
             }
         }
@@ -29,8 +29,8 @@ pipeline {
         stage('Coverage') {
             steps {
                 script {
-                    // Re-install dependencies to ensure pytest is available
-                    bat 'set PYTHONPATH=%WORKSPACE% && venv\\Scripts\\activate && pip install -r requirements.txt'
+                    // Install locked dependencies and run coverage
+                    bat 'set PYTHONPATH=%WORKSPACE% && venv\\Scripts\\activate && pip install -r requirements_lock.txt'
                     bat 'set PYTHONPATH=%WORKSPACE% && venv\\Scripts\\activate && coverage run -m pytest'
                     bat 'set PYTHONPATH=%WORKSPACE% && venv\\Scripts\\activate && coverage report -m'
                     bat 'set PYTHONPATH=%WORKSPACE% && venv\\Scripts\\activate && coverage html'
