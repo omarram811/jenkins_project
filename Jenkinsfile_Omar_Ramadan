@@ -1,49 +1,39 @@
 pipeline {
     agent any
     environment {
-    PYTHONPATH = "${env.WORKSPACE}" // Points to the project root
+        // Set PYTHONPATH explicitly for Python imports
+        PYTHONPATH = "${env.WORKSPACE}"
     }
     stages {
         stage('Setup') {
             steps {
                 script {
-                    // Create virtual environment if not already existing
-                    if (!fileExists("${WORKSPACE}\\venv\\Scripts\\activate")) {
-                        bat "python -m venv venv"
-                    }
-                    // Activate the virtual environment and install requirements
-                    bat """
-                    set PYTHONPATH=%PYTHONPATH%;${WORKSPACE}
-                    venv\\Scripts\\activate && pip install -r requirements.txt
-                    """
+                    // Create the virtual environment and install dependencies
+                    bat 'python -m venv venv'
+                    bat 'set PYTHONPATH=%WORKSPACE% && venv\\Scripts\\activate && pip install -r requirements.txt'
                 }
             }
         }
         stage('Lint') {
             steps {
                 script {
-                    bat "${VIRTUAL_ENV}\\Scripts\\activate && flake8 app.py"
+                    // Run linting (flake8)
+                    bat 'set PYTHONPATH=%WORKSPACE% && venv\\Scripts\\activate && flake8 app.py'
                 }
             }
         }
         stage('Test') {
             steps {
                 script {
-                    bat "${VIRTUAL_ENV}\\Scripts\\activate && pytest"
-                }
-            }
-        }
-        stage('Deploy') {
-            steps {
-                script {
-                    echo "Deploying application..."
+                    // Run tests (pytest)
+                    bat 'set PYTHONPATH=%WORKSPACE% && venv\\Scripts\\activate && pytest'
                 }
             }
         }
     }
     post {
         always {
-            cleanWs() 
+            cleanWs()
         }
     }
 }
