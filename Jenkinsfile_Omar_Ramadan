@@ -51,10 +51,8 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
-                    // Basic deployment script, adjust as necessary for your deployment environment
                     bat 'echo Deploying application...'
                     bat 'set PYTHONPATH=%WORKSPACE% && venv\\Scripts\\activate && python app.py'
-                    // Note: Customize this command to fit your actual deployment target.
                 }
             }
         }
