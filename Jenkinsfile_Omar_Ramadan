@@ -8,46 +8,45 @@ pipeline {
             steps {
                 script {
                     bat 'python -m venv venv'
-                    bat 'set PYTHONPATH=%WORKSPACE% && venv\\Scripts\\activate && pip install -r requirements.txt && pip freeze > requirements_lock.txt'
+                    bat 'venv\\Scripts\\activate && pip install -r requirements.txt && pip freeze > requirements_lock.txt'
                 }
             }
         }
         stage('Lint') {
             steps {
                 script {
-                    bat 'set PYTHONPATH=%WORKSPACE% && venv\\Scripts\\activate && flake8 app.py'
+                    bat 'venv\\Scripts\\activate && flake8 app.py'
                 }
             }
         }
         stage('Test') {
             steps {
                 script {
-                    bat 'set PYTHONPATH=%WORKSPACE% && venv\\Scripts\\activate && pytest'
+                    bat 'venv\\Scripts\\activate && pytest'
                 }
             }
         }
         stage('Coverage') {
             steps {
                 script {
-                    // Install locked dependencies and run coverage
-                    bat 'set PYTHONPATH=%WORKSPACE% && venv\\Scripts\\activate && pip install -r requirements_lock.txt'
-                    bat 'set PYTHONPATH=%WORKSPACE% && venv\\Scripts\\activate && coverage run -m pytest'
-                    bat 'set PYTHONPATH=%WORKSPACE% && venv\\Scripts\\activate && coverage report -m'
-                    bat 'set PYTHONPATH=%WORKSPACE% && venv\\Scripts\\activate && coverage html'
+                    bat 'venv\\Scripts\\activate && pip install -r requirements_lock.txt' // Ensures environment consistency
+                    bat 'venv\\Scripts\\activate && coverage run -m pytest'
+                    bat 'venv\\Scripts\\activate && coverage report -m'
+                    bat 'venv\\Scripts\\activate && coverage html'
                 }
             }
         }
         stage('Security Scan') {
             steps {
                 script {
-                    bat 'set PYTHONPATH=%WORKSPACE% && venv\\Scripts\\activate && bandit -r .'
+                    bat 'venv\\Scripts\\activate && bandit -r .'
                 }
             }
         }
         stage('Deploy') {
             steps {
                 script {
-                    bat 'set PYTHONPATH=%WORKSPACE% && venv\\Scripts\\activate && python app.py'
+                    bat 'venv\\Scripts\\activate && python app.py'
                 }
             }
         }
