@@ -22,7 +22,7 @@ pipeline {
         stage('Test') {
             steps {
                 script {
-                    bat 'venv\\Scripts\\activate && pip install -r requirements_lock.txt' // Ensure consistent environment
+                    bat 'venv\\Scripts\\activate && pip install -r requirements_lock.txt'
                     bat 'venv\\Scripts\\activate && pytest'
                 }
             }
@@ -30,7 +30,11 @@ pipeline {
         stage('Coverage') {
             steps {
                 script {
-                    bat 'venv\\Scripts\\activate && pip install -r requirements_lock.txt' // Ensure pytest and coverage are installed
+                    // Ensuring all dependencies, including pytest, are installed
+                    bat 'venv\\Scripts\\activate && pip install pytest coverage'
+                    bat 'venv\\Scripts\\activate && pip list' // Debug: Show installed packages
+
+                    // Running coverage with pytest
                     bat 'venv\\Scripts\\activate && coverage run -m pytest'
                     bat 'venv\\Scripts\\activate && coverage report -m'
                     bat 'venv\\Scripts\\activate && coverage html'
