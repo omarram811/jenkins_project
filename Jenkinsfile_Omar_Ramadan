@@ -29,7 +29,7 @@ pipeline {
         stage('Coverage') {
             steps {
                 script {
-                    // Ensure dependencies are active before running coverage
+                    // Re-install dependencies to ensure pytest is available
                     bat 'set PYTHONPATH=%WORKSPACE% && venv\\Scripts\\activate && pip install -r requirements.txt'
                     bat 'set PYTHONPATH=%WORKSPACE% && venv\\Scripts\\activate && coverage run -m pytest'
                     bat 'set PYTHONPATH=%WORKSPACE% && venv\\Scripts\\activate && coverage report -m'
@@ -47,7 +47,6 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
-                    bat echo 'Deploying application...'
                     bat 'set PYTHONPATH=%WORKSPACE% && venv\\Scripts\\activate && python app.py'
                 }
             }
