@@ -7,13 +7,15 @@ pipeline {
         stage('Setup') {
             steps {
                 script {
-                    if (!fileExists("${env.WORKSPACE}\\${VIRTUAL_ENV}")) {
-                        bat """
-                        set PYTHONPATH=%PYTHONPATH%;${WORKSPACE}
-                        ${VIRTUAL_ENV}\\Scripts\\activate && pytest
-                        """
+                    // Create virtual environment if not already existing
+                    if (!fileExists("${WORKSPACE}\\venv\\Scripts\\activate")) {
+                        bat "python -m venv venv"
                     }
-                    bat "${VIRTUAL_ENV}\\Scripts\\activate && pip install -r requirements.txt"
+                    // Activate the virtual environment and install requirements
+                    bat """
+                    set PYTHONPATH=%PYTHONPATH%;${WORKSPACE}
+                    venv\\Scripts\\activate && pip install -r requirements.txt
+                    """
                 }
             }
         }
