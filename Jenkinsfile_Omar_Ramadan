@@ -1,23 +1,19 @@
 pipeline {
     agent any
-
     environment {
         VIRTUAL_ENV = 'venv'
     }
-
     stages {
         stage('Setup') {
             steps {
                 script {
-                    if (!fileExists("${env.WORKSPACE}/${VIRTUAL_ENV}")) {
-                        sh "python -m venv ${VIRTUAL_ENV}"
+                    if (!fileExists("${env.WORKSPACE}\\${VIRTUAL_ENV}")) {
+                        bat "python -m venv ${VIRTUAL_ENV}"
                     }
-                    // On Windows, use `call` with the path to the activate script
                     bat "${VIRTUAL_ENV}\\Scripts\\activate && pip install -r requirements.txt"
                 }
             }
         }
-
         stage('Lint') {
             steps {
                 script {
@@ -25,7 +21,6 @@ pipeline {
                 }
             }
         }
-
         stage('Test') {
             steps {
                 script {
@@ -33,20 +28,17 @@ pipeline {
                 }
             }
         }
-
         stage('Deploy') {
             steps {
                 script {
-                    // Deployment logic, e.g., pushing to a remote server
                     echo "Deploying application..."
                 }
             }
         }
     }
-
     post {
         always {
-            cleanWS()
+            cleanWs() 
         }
     }
 }
